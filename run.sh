@@ -20,14 +20,14 @@ fi
 
 ( cd build ; make )
 
-executables="DataGenerator A B"
+executables="DataGenerator Serial B"
 if [ $# -eq 0 ]; then
 	echo "Please supply the name of the executable"
 	exit 1
 fi
 
 executable=$1
-( cd bin ; ./$executable) || {
+( cd bin ; ./$executable "${@:2}") || {
 	echo "Invalid executable name supplied, try one of: "
 	echo $executables
 }

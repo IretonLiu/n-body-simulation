@@ -10,32 +10,51 @@
 #include <string>
 #include <vector>
 
-// #define ASSERT(x) \
-//     if (!(x)) raise(SIGTRAP)
-
 #define G 6.67430e-11
 
 class Body {
    public:
     long double mass;
+
+    // position
     long double x;
     long double y;
 
+    // velocity
+    long double vx = 0;
+    long double vy = 0;
+
+    // force
+    long double fx = 0;
+    long double fy = 0;
+
+    // do NOT use for writing data to file - scientific notation not present
     inline std::string toString() {
-        return std::to_string(mass) + " " + std::to_string(x) + " " +
-               std::to_string(y);
+        return std::to_string(mass) + " " + std::to_string(x) + " " + std::to_string(y);
     }
 
-    Body(long double mass, long double x, long double y)
-        : mass(mass), x(x), y(y){};
+    Body(long double mass, long double x, long double y) : mass(mass), x(x), y(y){};
+
+    // changes the force
+    void accumulateForce(long double forceX, long double forceY);
+
+    // set the force to zero
+    void resetForce();
+
+    // updates the position
+    // don't need a time step since this will be called at a regular rate
+    void update();
+
+    // calculate force exerted on this body by another body
+    std::pair<long double, long double> calculateForce(Body *other);
 };
 
-inline float DistSquared(float x1, float y1, float x2, float y2) {
+inline double DistSquared(float x1, float y1, float x2, float y2) {
     return std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2);
 }
 
-inline float Newtons(float m1, float m2, float r) {
-    return G * m1 * m2 * (1 / std::pow(r, 2));
+inline double NewtonsGravitationalLaw(float m1, float m2, float rSquared) {
+    return G * m1 * m2 * (1 / rSquared);
 }
 
 /* Generate a n bodies with magnitude P and M
