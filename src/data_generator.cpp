@@ -30,6 +30,7 @@ int main(int argc, char* argv[]) {
 
   // write to file
   std::ofstream dataFile("../data/" + std::string(argv[4]));
+  dataFile.precision(30);
 
   dataFile << n << std::endl;
   dataFile << std::scientific;

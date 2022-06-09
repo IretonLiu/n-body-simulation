@@ -12,7 +12,7 @@
 
 #define G 6.67430e-11
 
-#define ITERATIONS 1000
+#define ITERATIONS 1
 
 class Body {
  public:

@@ -91,6 +91,7 @@ int main(int argc, char* argv[]) {
 
   // write all the output and free all the bodies
   std::ofstream outFile("../out/" + filename);
+  outFile.precision(30);
 
   outFile << N << std::endl;
   outFile << std::scientific;
