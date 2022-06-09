@@ -12,6 +12,8 @@
 
 #define G 6.67430e-11
 
+#define ITERATIONS 1000
+
 class Body {
  public:
   long double mass;
@@ -49,11 +51,11 @@ class Body {
   std::pair<long double, long double> calculateForce(Body *other);
 };
 
-inline double DistSquared(float x1, float y1, float x2, float y2) {
+inline long double DistSquared(long double x1, long double y1, long double x2, long double y2) {
   return std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2);
 }
 
-inline double NewtonsGravitationalLaw(float m1, float m2, float rSquared) {
+inline long double NewtonsGravitationalLaw(long double m1, long double m2, long double rSquared) {
   return G * m1 * m2 * (1 / rSquared);
 }
 

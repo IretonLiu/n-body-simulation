@@ -50,8 +50,8 @@ void Body::update() {
 
 std::pair<long double, long double> Body::calculateForce(Body *other) {
   // use Newton's Gravitational Law for this
-  double rSquared = DistSquared(this->x, this->y, other->x, other->y);
-  double magnitude = NewtonsGravitationalLaw(this->mass, other->mass, rSquared);
+  long double rSquared = DistSquared(this->x, this->y, other->x, other->y);
+  long double magnitude = NewtonsGravitationalLaw(this->mass, other->mass, rSquared);
 
   // determine the direction of the force (will be towards the other body)
   long double direcX = other->x - this->x;

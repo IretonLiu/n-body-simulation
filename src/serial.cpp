@@ -5,9 +5,34 @@
 
 #include "utilities.h"
 
-void BruteForce(std::vector<Body*> bodies) {
+void BruteForce(std::vector<Body*>& bodies) {
   // reset the force acting on each body
+  for (Body* body : bodies) {
+    body->resetForce();
+  }
+
   // compute all the forces acting on each body
+  // loop until the second last body
+  for (int i = 0; i < bodies.size() - 1; i++) {
+    // compare this body to all that come after it
+    for (int j = i + 1; j < bodies.size(); j++) {
+      // get the force acting between the bodies
+      auto forcePair = bodies[i]->calculateForce(bodies[j]);
+
+      // add the forst to each body
+      bodies[i]->accumulateForce(forcePair.first, forcePair.second);
+
+      // negate the force for the second body (opp direc -> Newton 3)
+      bodies[j]->accumulateForce(-forcePair.first, -forcePair.second);
+    }
+
+    // body "i" has done all force comparisons
+    // update it
+    bodies[i]->update();
+  }
+
+  // update the last body
+  bodies[bodies.size() - 1]->update();
 }
 
 void BarnesHut() {
@@ -26,7 +51,8 @@ int main(int argc, char* argv[]) {
   }
 
   // open the file
-  std::ifstream inFile("../data/" + std::string(argv[1]));
+  std::string filename(argv[1]);
+  std::ifstream inFile("../data/" + filename);
 
   // the number of particles
   int N;
@@ -58,10 +84,13 @@ int main(int argc, char* argv[]) {
   inFile.close();
 
   // call the brute force
-  BruteForce(bodies);
+  // perform a number of iterations
+  for (int iters = 0; iters < ITERATIONS; iters++) {
+    BruteForce(bodies);
+  }
 
   // write all the output and free all the bodies
-  std::ofstream outFile("../out/" + std::string(argv[4]));
+  std::ofstream outFile("../out/" + filename);
 
   outFile << N << std::endl;
   outFile << std::scientific;
