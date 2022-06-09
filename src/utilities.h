@@ -22,10 +22,12 @@ class Body {
     long double y;
 
     inline std::string toString() {
-        return std::to_string(mass) + " " + std::to_string(x) + " " + std::to_string(y);
+        return std::to_string(mass) + " " + std::to_string(x) + " " +
+               std::to_string(y);
     }
 
-    Body(long double mass, long double x, long double y) : mass(mass), x(x), y(y){};
+    Body(long double mass, long double x, long double y)
+        : mass(mass), x(x), y(y){};
 };
 
 inline float DistSquared(float x1, float y1, float x2, float y2) {
@@ -41,4 +43,4 @@ inline float Newtons(float m1, float m2, float r) {
  * @param P magnitude of the position
  * @param M magnitude of the mass
  */
-std::vector<Body*> GenerateNBodies(int n, int P, int M);
+std::vector<Body *> GenerateNBodies(int n, int P, int M);
