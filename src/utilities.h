@@ -1,5 +1,6 @@
 #pragma once
 
+#include <assert.h>
 #include <signal.h>
 #include <stdlib.h>
 
@@ -9,8 +10,8 @@
 #include <string>
 #include <vector>
 
-#define ASSERT(x, y) \
-    if (!(x > y)) raise(SIGTRAP)
+// #define ASSERT(x) \
+//     if (!(x)) raise(SIGTRAP)
 
 #define G 6.67430e-11
 

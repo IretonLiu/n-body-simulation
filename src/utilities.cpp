@@ -23,8 +23,8 @@ static Body* GenerateBody(int P, int M) {
 }
 
 std::vector<Body*> GenerateNBodies(int n, int P, int M) {
-    ASSERT(P, DELTA);
-    ASSERT(M, DELTA);
+    assert(P > DELTA);
+    assert(M > DELTA);
 
     std::vector<Body*>
         nbodies(n);

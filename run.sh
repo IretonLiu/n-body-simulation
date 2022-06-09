@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts 'ce:' OPTION; do
+while getopts 'c:' OPTION; do
   case "$OPTION" in
     c)
       rm -rf build
