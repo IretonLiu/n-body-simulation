@@ -1,5 +1,4 @@
-#ifndef GLHelper_HPP
-#define GLHelper_HPP
+#pragma once
 
 // openGL libraries
 #include <GL/glew.h>
@@ -25,19 +24,24 @@
 #include <string>
 #include <vector>
 // custom includes
-#include "camera.h"
+
 #include "geometry.h"
 #include "index_buffer.h"
 #include "renderer.h"
 #include "shader.h"
+#include "utilities.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
 
+#define WINDOW_WIDTH 256
+#define WINDOW_HEIGHT 256
+
 extern GLFWwindow* window;
 
-int initGLProgram(const char* programName);
-// int loadShaders(const char* vertexshader_path, const char* fragmentshader_path);
-void render(PerspectiveCamera* camera, Geometry* geometry);
-// void createVBOs(Geometry* geometry);
+extern float canvas[WINDOW_WIDTH * WINDOW_HEIGHT];
 
-#endif
+int initGLProgram(const char* programName);
+
+void ClearCanvas();
+
+void UpdateCanvas(std::vector<Body*> bodies, int P);

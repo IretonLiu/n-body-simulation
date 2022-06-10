@@ -1,7 +1,12 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <signal.h>
+
+// error library
+#include <GL/freeglut.h>
+#include <GL/glu.h>
 
 #include "index_buffer.h"
 #include "shader.h"
