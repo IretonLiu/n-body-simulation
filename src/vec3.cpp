@@ -27,8 +27,8 @@ vec3 vec3::operator*(long double d) {
 vec3 vec3::operator-() {
     vec3 vec;
     vec.x = -this->x;
-    vec.x = -this->y;
-    vec.x = -this->z;
+    vec.y = -this->y;
+    vec.z = -this->z;
 
     return vec;
 }

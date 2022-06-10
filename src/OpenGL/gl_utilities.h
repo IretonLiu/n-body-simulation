@@ -25,23 +25,22 @@
 #include <vector>
 // custom includes
 
+#include "../utilities.h"
+#include "camera.h"
 #include "geometry.h"
 #include "index_buffer.h"
 #include "renderer.h"
 #include "shader.h"
-#include "utilities.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
 
-#define WINDOW_WIDTH 256
-#define WINDOW_HEIGHT 256
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
 
 extern GLFWwindow* window;
 
-extern float canvas[WINDOW_WIDTH * WINDOW_HEIGHT];
-
 int initGLProgram(const char* programName);
 
-void ClearCanvas();
+std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P);
 
-void UpdateCanvas(std::vector<Body*> bodies, int P);
+void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*>&));

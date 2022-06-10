@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-// #include "gl_utilities.h"
+#include "OpenGL/gl_utilities.h"
 #include "utilities.h"
 
 // #define MAGNITUDE 5
@@ -61,7 +61,14 @@ int main(int argc, char* argv[]) {
 
     // the number of particles
     int N;
-    inFile >> N;
+
+    // magnitude of the position
+    int P;
+
+    // magnitude of the mass
+    int M;
+
+    inFile >> N >> P >> M;
     inFile.ignore();
 
     // helper variables for reading input
@@ -84,19 +91,19 @@ int main(int argc, char* argv[]) {
         ss >> mass >> x >> y >> z;
 
         bodies.push_back(new Body(mass, x, y, z));
+        bodies[i]->velocity.x = x / std::pow(10, P - 3);
+        bodies[i]->velocity.y = y / std::pow(10, P - 3);
+        bodies[i]->velocity.z = z / std::pow(10, P - 3);
     }
 
     // close the file
     inFile.close();
 
-    // int glProgramID = initGLProgram("Serial");
-
     // call the brute force
     // perform a number of iterations
-    for (int iters = 0; iters < ITERATIONS; iters++) {
-        BruteForce(bodies);
-    }
-    // render();
+
+    int glProgramID = initGLProgram("Serial");
+    render(bodies, P, BruteForce);
 
     // write all the output and free all the bodies
     std::ofstream outFile("../out/" + filename);

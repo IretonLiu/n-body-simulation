@@ -42,93 +42,83 @@ int initGLProgram(const char* programName) {
     return 0;
 }
 
-void ClearCanvas() {
-    for (int y = 0; y < WINDOW_HEIGHT; y++) {
-        for (int x = 0; x < WINDOW_WIDTH; x++) {
-            canvas[x + WINDOW_WIDTH * y] = 0.0f;
-        }
+std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P) {
+    long int scale = std::pow(10, P);
+
+    std::vector<float> vertices(bodies.size() * 3);
+    for (int i = 0; i < bodies.size(); i++) {
+        vertices[i * 3] = bodies[i]->position.x / scale;
+        vertices[i * 3 + 1] = bodies[i]->position.y / scale;
+        vertices[i * 3 + 2] = bodies[i]->position.z / scale;
     }
+
+    return vertices;
 }
 
-void UpdateCanvas(std::vector<Body*> bodies, int P) {
-    long double maxPos = GetMaxPosition(P);
-    for (Body* body : bodies) {
-        int canvasX = std::floor(WINDOW_WIDTH * body->x / maxPos);
-        int canvasY = std::floor(WINDOW_HEIGHT * body->y / maxPos);
+// void updateSSBO(float* canvas, int bindingPoint) {
+//     GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, shaderStorageBuffer));
 
-        if (canvasX >= 0 && canvasX < WINDOW_WIDTH && canvasY >= 0 && canvasY < WINDOW_HEIGHT) {
-            canvas[canvasX + WINDOW_WIDTH * canvasY] += 1.0f / bodies.size();
-        }
-    }
-}
+//     GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * WINDOW_WIDTH * WINDOW_HEIGHT, canvas, GL_DYNAMIC_COPY));
+//     GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, shaderStorageBuffer));
 
-void updateSSBO(float* canvas, int bindingPoint) {
-    GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, shaderStorageBuffer));
-
-    GLCall(glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(float) * WINDOW_WIDTH * WINDOW_HEIGHT, canvas, GL_DYNAMIC_COPY));
-    GLCall(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, bindingPoint, shaderStorageBuffer));
-
-    // unbind
-    GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
-}
+//     // unbind
+//     GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0));
+// }
 
 // main render function
-void render() {
-    Geometry* imagePlane = new Geometry();
-    imagePlane->vertices = {
-        -1.0f, 1.0f, 0.0f,
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f};
-
-    imagePlane->indices = {
-        0, 1, 3,
-        3, 1, 2};
-
+void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*>&)) {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    PerspectiveCamera* camera = new PerspectiveCamera(70.0, 4.0 / 3.0, 0.1, 100.0);
+    camera->setPosition(glm::vec3(0.5, 0.5, 2));
+    camera->setTarget(glm::vec3(bodies[bodies.size() - 1]->position.x / std::pow(10, P), bodies[bodies.size() - 1]->position.y / std::pow(10, P), bodies[bodies.size() - 1]->position.z / std::pow(10, P)));
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // changes to wireframe mode
     // white background
-    glClearColor(0.5f, 0.5f, 0.5f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     Shader* shader = new Shader();
     shader->CreateVFShader("../src/OpenGL/shaders/VertexShader.vert", "../src/OpenGL/shaders/FragmentShader.frag");
     shader->Bind();
 
-    GLCall(glGenBuffers(1, &shaderStorageBuffer));
+    std::vector<float> vertices = GenVerticesFromBodies(bodies, P);
 
     // generate the vertex array object
     VertexArray* va = new VertexArray();
+
     // array buffer for vertex position
-    VertexBuffer* vb = new VertexBuffer(&imagePlane->vertices[0], imagePlane->vertices.size() * sizeof(GLfloat));
+    VertexBuffer* vb = new VertexBuffer(&vertices[0], vertices.size() * sizeof(float));
 
     VertexBufferLayout layout;
     layout.Push(GL_FLOAT, 3, GL_FALSE);
     va->AddBuffer(*vb, layout);
 
     // array buffer for indices
-    IndexBuffer* ib = new IndexBuffer(&imagePlane->indices[0], imagePlane->indices.size());
+    // IndexBuffer* ib = new IndexBuffer(&imagePlane->indices[0], imagePlane->indices.size());
     int frameNumber = 0;
-    ClearCanvas();
     do {
         // Clear the screen
-        UpdateCanvas(bodies, MAGNITUDE);
-
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-        if (frameNumber % 1 == 0) {
-            updateSSBO(canvas, 1);
-            BruteForce(bodies);
-        }
+
+        shader->SetUniformMatrix4fv("modelView", camera->getModelViewMat());
+        shader->SetUniformMatrix4fv("projection", camera->getProjectionMatrix());
+
         va->Bind();
-        ib->Bind();
-        // glDrawArrays(GL_TRIANGLES, 0, 12 * 3);  // 12*3 indices starting at 0 -> 12 triangles
-        GLCall(glDrawElements(GL_TRIANGLES, imagePlane->indices.size(), GL_UNSIGNED_INT, nullptr));
+
+        GLCall(glDrawArrays(GL_POINTS, 0, vertices.size() / 3));
 
         // Swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
-        ClearCanvas();
+
+        if (frameNumber % 1 == 0) {
+            callback(bodies);
+            vertices = GenVerticesFromBodies(bodies, P);
+            vb->UpdateBuffer(&vertices[0], vertices.size() * sizeof(float));
+        }
         frameNumber++;
+        camera->setTarget(glm::vec3(bodies[bodies.size() - 1]->position.x / std::pow(10, P), bodies[bodies.size() - 1]->position.y / std::pow(10, P), bodies[bodies.size() - 1]->position.z / std::pow(10, P)));
+
     }  // Check if the ESC key was pressed or the window was closed
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
@@ -136,7 +126,6 @@ void render() {
     glDeleteProgram(shader->GetRendererID());
     delete va;
     delete vb;
-    delete ib;
     // Close OpenGL window and terminate GLFW
     glfwTerminate();
 }

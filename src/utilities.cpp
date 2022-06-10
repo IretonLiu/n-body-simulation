@@ -1,42 +1,36 @@
 #include "utilities.h"
 
-#define DELTA 1
-
-inline int RandomRange() {
-    return rand() % (2 * DELTA + 1) - DELTA;
-}
-
-static Body *GenerateBody(int P, int M) {
-    int p = RandomRange() + P;  // magnitude of position
-    // int p = P;
-    int m = RandomRange() + M;  // magnitude of mass
-
-    // mantissa of position
-    long double x = 10.0 * rand() / RAND_MAX;
-    long double y = 10.0 * rand() / RAND_MAX;
-    long double z = 10.0 * rand() / RAND_MAX;
-
-    // mantissa of the mass
-    long double mass = 10.0 * rand() / RAND_MAX;
-
-    Body *body = new Body(mass * std::pow(10, m), x * std::pow(10, p), y * std::pow(10, p), z * std::pow(10, p));
-
-    return body;
-}
-
 std::vector<Body *> GenerateNBodies(int n, int P, int M) {
-    assert(P > DELTA);
-    assert(M > DELTA);
+    std::vector<Body *> nbodies(n + 1);
 
-    std::vector<Body *>
-        nbodies(n);
+    std::default_random_engine generator;
+    std::normal_distribution<long double> distribution(0.5, 1.0 / 6.0);
+
     for (int i = 0; i < n; i++) {
-        nbodies[i] = GenerateBody(P, M);
+        long double x = distribution(generator);
+        if (x < 0)
+            x = 0.0;
+        else if (x > 1.0)
+            x = 1.0;
+
+        long double y = distribution(generator);
+        if (y < 0)
+            y = 0.0;
+        else if (y > 1.0)
+            y = 1.0;
+
+        long double z = distribution(generator);
+        if (z < 0)
+            z = 0.0;
+        else if (z > 1.0)
+            z = 1.0;
+
+        long double mass = 10.0 * rand() / RAND_MAX;
+        Body *body = new Body(mass * std::pow(10, M), x * std::pow(10, P), y * std::pow(10, P), z * std::pow(10, P));
+
+        nbodies[i] = body;
     }
 
+    nbodies[n] = new Body(1 * std::pow(10, (M + 4)), 0.5 * std::pow(10, P), 0.5 * std::pow(10, P), 0.5 * std::pow(10, P));
     return nbodies;
-}
-
-long double GetMaxPosition(int P) {
-    return std::pow(10, P + 1 + DELTA);
 }

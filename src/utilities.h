@@ -9,7 +9,6 @@
 #include <iostream>
 #include <random>
 #include <string>
-// #include <tuple>
 #include <vector>
 
 #include "body.h"
@@ -17,7 +16,7 @@
 
 #define G 6.67430e-11
 
-#define ITERATIONS 1
+#define ITERATIONS 2000
 
 class Body;
 
@@ -30,7 +29,7 @@ inline long double DistSquared(const vec3 &p1, const vec3 &p2) {
 }
 
 inline long double NewtonsGravitationalLaw(long double m1, long double m2, long double rSquared) {
-    return G * m1 * m2 * (1 / rSquared);
+    return G * m1 * m2 * (1 / (rSquared));
 }
 
 /**

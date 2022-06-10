@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
     std::ofstream dataFile("../data/" + std::string(argv[4]));
     dataFile.precision(30);
 
-    dataFile << n << std::endl;
+    dataFile << n + 1 << " " << P << " " << M << std::endl;
     dataFile << std::scientific;
     for (Body* body : nBodies) {
         dataFile << body->mass
