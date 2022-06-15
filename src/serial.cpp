@@ -1,3 +1,4 @@
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -10,9 +11,16 @@
 // #define MAGNITUDE 5
 
 std::vector<Body*> bodies;
-long double distThreshold;
+double theta = 0.8;
+
+using std::chrono::duration;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
 
 void BruteForce() {
+    auto t1 = high_resolution_clock::now();
+
     // reset the force acting on each body
     for (Body* body : bodies) {
         body->resetForce();
@@ -40,23 +48,37 @@ void BruteForce() {
 
     // update the last body
     bodies[bodies.size() - 1]->update();
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    std::cout << ms_int.count() << "ms for bruteforce\n";
 }
 
 void BarnesHut() {
     // TODO: time this
-    Node* octree = new Node(bodies);
-    octree->ConstructTree();
 
+    Node* octree = new Node(bodies);
+
+    auto t1 = high_resolution_clock::now();
+    octree->ConstructTree();
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    std::cout << ms_int.count() << "ms for contructrion of tree\n";
+
+    t1 = high_resolution_clock::now();
     for (unsigned int i = 0; i < bodies.size(); i++) {
         Body* body = bodies[i];
 
         // reset the force acting on the body
         body->resetForce();
 
-        octree->CalculateForces(body, distThreshold);
-
-        body->update();
+        octree->CalculateForces(body, theta);
     }
+    for (Body* body : bodies) body->update();
+    t2 = high_resolution_clock::now();
+    ms_int = duration_cast<milliseconds>(t2 - t1);
+    std::cout << ms_int.count() << "ms for force\n";
+
+    delete octree;
 }
 
 int main(int argc, char* argv[]) {
@@ -124,8 +146,11 @@ int main(int argc, char* argv[]) {
     // perform a number of iterations
 
     int glProgramID = initGLProgram("Serial");
-    // render(bodies, P, M, BruteForce);
-    BarnesHut();
+    // render(bodies, P, M, BarnesHut);
+    // for (int i = 0; i < 1; i++)
+    BruteForce();
+
+    // BarnesHut();
 
     // write all the output and free all the bodies
     std::ofstream outFile("../out/" + filename);

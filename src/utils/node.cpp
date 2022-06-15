@@ -18,7 +18,7 @@ void Node::ConstructChildren() {
 
     int maxBodies = bodies.size();
     for (int i = 0; i < 8; i++) {
-        children[i] = new Node(mins[i] + vec3(0, 0, 0), mins[i] + halfsize, maxBodies);
+        children[i] = new Node(mins[i], mins[i] + halfsize, maxBodies);
     }
 }
 
@@ -28,6 +28,7 @@ Node::Node(std::vector<Body*>& bodies) {
     centreOfMass = vec3(0, 0, 0);
     minBound = bodies[0]->position;
     maxBound = bodies[0]->position;
+    mass = 0;
 
     for (Body* body : this->bodies) {
         vec3 position = body->position;
@@ -47,61 +48,73 @@ Node::Node(vec3 minBound, vec3 maxBound, int maxBodies) {
     this->bodies.reserve(maxBodies);  // reserve enough space for the children
     this->children = std::vector<Node*>(8);
     centreOfMass = vec3(0, 0, 0);
+    mass = 0;
 };
 
 void Node::ConstructTree() {
-    if (bodies.size() == 1) {
-        centreOfMass = bodies[0]->position * bodies[0]->mass;
-        mass = bodies[0]->mass;
-        return;
-    }
-
-    if (bodies.size() < 1) return;
+    std::stack<Node*> traversalStack;
+    traversalStack.push(this);
 
     // if there is more than one body in this node, then construct the subtree of this node
-    vec3 centre = (minBound + maxBound) / 2;
-    ConstructChildren();
+    // uses the stack based approach
 
-    int index = 0;
+    while (!traversalStack.empty()) {
+        Node* currentNode = traversalStack.top();
+        traversalStack.pop();
 
-    for (int i = 0; i < bodies.size(); i++) {
-        Body* body = bodies[i];
-        vec3 pos = body->position;
-        if (pos.y >= centre.y) {  // top half
-            index += 0;
-        } else {  // bottom half
-            index += 4;
+        if (currentNode->bodies.size() == 1) {
+            currentNode->centreOfMass = currentNode->bodies[0]->position * currentNode->bodies[0]->mass;
+            currentNode->mass = currentNode->bodies[0]->mass;
+            continue;
         }
 
-        if (pos.x >= centre.x) {  // rigth half
-            index += 1;
-        } else {  // left half
-            index += 0;
+        if (currentNode->bodies.size() < 1) continue;
+
+        vec3 centre = (currentNode->minBound + currentNode->maxBound) / 2;
+        currentNode->ConstructChildren();
+
+        for (int i = 0; i < currentNode->bodies.size(); i++) {
+            int index = 0;
+            Body* body = currentNode->bodies[i];
+            vec3 pos = body->position;
+            if (pos.y >= centre.y) {  // top half
+                index += 0;
+            } else {  // bottom half
+                index += 4;
+            }
+
+            if (pos.x >= centre.x) {  // rigth half
+                index += 1;
+            } else {  // left half
+                index += 0;
+            }
+
+            if (pos.z >= centre.z) {  // front half
+                index += 0;
+            } else {  // back half
+                index += 2;
+            }
+
+            currentNode->children[index]->bodies.push_back(body);
+
+            assert(!std::isnan(currentNode->mass));
+            assert(!std::isnan(currentNode->mass + body->mass));
+            currentNode->mass += body->mass;
+
+            currentNode->centreOfMass += body->position * body->mass;
         }
 
-        if (pos.z >= centre.z) {  // front half
-            index += 0;
-        } else {  // back half
-            index += 2;
+        for (int i = 0; i < 8; i++) {
+            currentNode->children[i]->bodies.shrink_to_fit();
+            traversalStack.push(currentNode->children[i]);
         }
-
-        children[index]->bodies.push_back(body);
-
-        mass += body->mass;
-        centreOfMass += body->position * body->mass;
-    }
-
-    for (int i = 0; i < 8; i++) {
-        children[i]->bodies.shrink_to_fit();
-        children[i]->ConstructTree();
     }
 
     return;
 }
 
-void Node::CalculateForces(Body* body, long double r) {
+void Node::CalculateForces(Body* body, long double theta) {
     // square for distance comparison
-    long double rSquared = r * r;
 
     std::stack<Node*> traversalStack;
     traversalStack.push(this);
@@ -113,9 +126,10 @@ void Node::CalculateForces(Body* body, long double r) {
 
         if (numBodies == 1 && currentNode->bodies[0] == body) continue;
 
-        long double dSquared = DistSquared(body->position, currentNode->GetCOM(true));
+        long double d = std::sqrt(DistSquared(body->position, currentNode->GetCOM(true)));
+        long double s = std::sqrt(DistSquared(currentNode->maxBound, currentNode->minBound));
 
-        if (dSquared < rSquared && numBodies != 1) {
+        if ((s / d) > theta && numBodies != 1) {
             for (int i = 0; i < 8; i++) {
                 Node* child = currentNode->children[i];
 

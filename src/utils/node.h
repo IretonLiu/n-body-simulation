@@ -1,4 +1,8 @@
 #pragma once
+#include <assert.h>
+
+#include <cmath>
+#include <iostream>
 #include <stack>
 #include <vector>
 
@@ -18,6 +22,12 @@ class Node {
      * @param maxBodies maximum number of bodies that can be in this child node
      */
     Node(vec3 minBound, vec3 maxBound, int maxBodies);
+
+    ~Node() {
+        for (Node* child : children) {
+            if (child) delete child;
+        }
+    }
 
     inline vec3 GetMinBound() { return minBound; };
     inline vec3 GetMaxBound() { return maxBound; };

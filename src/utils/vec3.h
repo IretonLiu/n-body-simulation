@@ -3,15 +3,11 @@
 #include <cmath>
 class vec3 {
    public:
-    long double *data;
-    long double &x;
-    long double &y;
-    long double &z;
-    vec3() : data(new long double[3]), x(data[0]), y(data[1]), z(data[2]){};
-    vec3(long double x, long double y, long double z) : data(new long double[3]{x, y, z}), x(data[0]), y(data[1]), z(data[2]){};
-    ~vec3() {
-        delete[] data;
-    };
+    long double x;
+    long double y;
+    long double z;
+    vec3() : x(0), y(0), z(0){};
+    vec3(long double x, long double y, long double z) : x(x), y(y), z(z){};
 
     vec3 &operator+=(const vec3 &other);
     vec3 &operator=(const vec3 &other);
