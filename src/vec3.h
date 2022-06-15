@@ -13,6 +13,7 @@ class vec3 {
     };
 
     vec3 &operator+=(const vec3 &other);
+    vec3 &operator=(const vec3 &other);
     vec3 operator/(long double d);
     vec3 operator*(long double d);
     vec3 operator-();

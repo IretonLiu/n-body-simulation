@@ -41,6 +41,6 @@ extern GLFWwindow* window;
 
 int initGLProgram(const char* programName);
 
-std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P);
+std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P, int M);
 
-void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*>&));
+void render(std::vector<Body*> bodies, int P, int M, void (*callback)(std::vector<Body*>&));

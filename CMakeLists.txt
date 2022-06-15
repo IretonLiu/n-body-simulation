@@ -15,6 +15,8 @@ add_library(
 	src/vec3.cpp
 	src/utilities.h
 	src/utilities.cpp
+	src/node.h
+	src/node.cpp
 )
 
 add_library(

@@ -2,6 +2,7 @@
 
 // Input vertex data, different for all executions of this shader.
 layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in float pointSize;
 // Output data ; will be interpolated for each fragment.
 // out vec3 fragmentColor;
 // Values that stay constant for the whole mesh.
@@ -15,7 +16,7 @@ void main() {
   gl_Position = projection * modelView * vec4(vertexPosition, 1);
   // gl_Position = vec4(vertexPosition, 1);
 
-  gl_PointSize = 10.0;
+  gl_PointSize = pointSize * .001;
   // The color of each vertex will be interpolated
   // to produce the color of each fragment
   // fragmentColor = vertexColor;

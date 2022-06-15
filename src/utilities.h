@@ -4,6 +4,7 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#include <algorithm>
 #include <cmath>
 #include <glm/glm.hpp>
 #include <iostream>

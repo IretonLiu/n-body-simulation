@@ -8,6 +8,14 @@ vec3 &vec3::operator+=(const vec3 &other) {
     return *this;
 }
 
+vec3 &vec3::operator=(const vec3 &other) {
+    this->x = other.x;
+    this->y = other.y;
+    this->z = other.z;
+
+    return *this;
+}
+
 vec3 vec3::operator/(long double d) {
     vec3 vec;
     vec.x = this->x / d;

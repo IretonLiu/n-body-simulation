@@ -42,18 +42,30 @@ int initGLProgram(const char* programName) {
     return 0;
 }
 
-std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P) {
-    long int scale = std::pow(10, P);
+std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P, int M) {
+    long int scalePos = std::pow(10, P);
+    long int scaleMass = std::pow(10, M);
 
-    std::vector<float> vertices(bodies.size() * 3);
+    std::vector<float> vertices(bodies.size() * 4);
     for (int i = 0; i < bodies.size(); i++) {
-        vertices[i * 3] = bodies[i]->position.x / scale;
-        vertices[i * 3 + 1] = bodies[i]->position.y / scale;
-        vertices[i * 3 + 2] = bodies[i]->position.z / scale;
+        vertices[i * 4] = bodies[i]->position.x / scalePos;
+        vertices[i * 4 + 1] = bodies[i]->position.y / scalePos;
+        vertices[i * 4 + 2] = bodies[i]->position.z / scalePos;
+        vertices[i * 4 + 3] = bodies[i]->mass / scaleMass;
     }
 
     return vertices;
 }
+
+// std::vector<float> GetMassFromBodies(std::vector<Body*> bodies, int M) {
+//     long int scale = std::pow(10, M);
+//     std::vector<float> vertices(bodies.size());
+//     for (int i = 0; i < bodies.size(); i++) {
+//         vertices[i] = bodies[i]->mass / scale;
+//     }
+
+//     return vertices;
+// }
 
 // void updateSSBO(float* canvas, int bindingPoint) {
 //     GLCall(glBindBuffer(GL_SHADER_STORAGE_BUFFER, shaderStorageBuffer));
@@ -66,7 +78,7 @@ std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P) {
 // }
 
 // main render function
-void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*>&)) {
+void render(std::vector<Body*> bodies, int P, int M, void (*callback)(std::vector<Body*>&)) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
     PerspectiveCamera* camera = new PerspectiveCamera(70.0, 4.0 / 3.0, 0.1, 100.0);
@@ -81,17 +93,21 @@ void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*
     shader->CreateVFShader("../src/OpenGL/shaders/VertexShader.vert", "../src/OpenGL/shaders/FragmentShader.frag");
     shader->Bind();
 
-    std::vector<float> vertices = GenVerticesFromBodies(bodies, P);
+    std::vector<float> vertices = GenVerticesFromBodies(bodies, P, M);
+    // std::vector<float> mass = GenVerticesFromBodies(bodies, M);
 
     // generate the vertex array object
     VertexArray* va = new VertexArray();
 
     // array buffer for vertex position
     VertexBuffer* vb = new VertexBuffer(&vertices[0], vertices.size() * sizeof(float));
+    // VertexBuffer* vb2 = new VertexBuffer(&mass[0], mass.size() * sizeof(float));
 
     VertexBufferLayout layout;
     layout.Push(GL_FLOAT, 3, GL_FALSE);
+    layout.Push(GL_FLOAT, 1, GL_FALSE);
     va->AddBuffer(*vb, layout);
+    // va->AddBuffer(*vb2, layout);
 
     // array buffer for indices
     // IndexBuffer* ib = new IndexBuffer(&imagePlane->indices[0], imagePlane->indices.size());
@@ -113,7 +129,7 @@ void render(std::vector<Body*> bodies, int P, void (*callback)(std::vector<Body*
 
         if (frameNumber % 1 == 0) {
             callback(bodies);
-            vertices = GenVerticesFromBodies(bodies, P);
+            vertices = GenVerticesFromBodies(bodies, P, M);
             vb->UpdateBuffer(&vertices[0], vertices.size() * sizeof(float));
         }
         frameNumber++;

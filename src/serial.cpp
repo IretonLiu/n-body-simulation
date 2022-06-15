@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "OpenGL/gl_utilities.h"
+#include "node.h"
 #include "utilities.h"
 
 // #define MAGNITUDE 5
@@ -103,7 +104,7 @@ int main(int argc, char* argv[]) {
     // perform a number of iterations
 
     int glProgramID = initGLProgram("Serial");
-    render(bodies, P, BruteForce);
+    render(bodies, P, M, BruteForce);
 
     // write all the output and free all the bodies
     std::ofstream outFile("../out/" + filename);
