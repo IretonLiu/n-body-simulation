@@ -23,6 +23,8 @@ class Body {
 
     Body(long double mass, long double x, long double y, long double z);
 
+    Body(long double mass, const vec3 &position);
+
     // changes the force
     void accumulateForce(const vec3 &force);
 
@@ -35,4 +37,7 @@ class Body {
 
     // calculate force exerted on this body by another body
     vec3 calculateForce(Body *other);
+
+    // calcuate force based on centre of mass
+    vec3 calculateForce(vec3 centreOfMass, long double mass);
 };

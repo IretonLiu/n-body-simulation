@@ -16,7 +16,11 @@ void main() {
   gl_Position = projection * modelView * vec4(vertexPosition, 1);
   // gl_Position = vec4(vertexPosition, 1);
 
-  gl_PointSize = pointSize * .001;
+	if (pointSize == 10000.0){
+    gl_PointSize = pointSize * .002;
+	}else{
+		gl_PointSize = pointSize ;
+	}
   // The color of each vertex will be interpolated
   // to produce the color of each fragment
   // fragmentColor = vertexColor;

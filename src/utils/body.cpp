@@ -6,6 +6,10 @@ Body::Body(long double mass, long double x, long double y, long double z) : mass
     position.z = z;
 }
 
+Body::Body(long double mass, const vec3 &position) : mass(mass) {
+    this->position = position;
+}
+
 void Body::accumulateForce(const vec3 &force) {
     // update the force
     this->force += force;
@@ -40,6 +44,26 @@ vec3 Body::calculateForce(Body *other) {
     // long double direcY = other->y - this->y;
 
     vec3 direction = other->position - this->position;
+
+    // normalise the direction
+    long double norm = std::sqrt(rSquared);
+
+    // take the component of force acting in each direction
+    vec3 force = (direction / norm) * magnitude;
+
+    return force;
+}
+
+vec3 Body::calculateForce(vec3 centreOfMass, long double mass) {
+    // use Newton's Gravitational Law for this
+    long double rSquared = DistSquared(this->position, centreOfMass);
+    long double magnitude = NewtonsGravitationalLaw(this->mass, mass, rSquared);
+
+    // determine the direction of the force (will be towards the other body)
+    // long double direcX = other->x - this->x;
+    // long double direcY = other->y - this->y;
+
+    vec3 direction = centreOfMass - this->position;
 
     // normalise the direction
     long double norm = std::sqrt(rSquared);

@@ -25,7 +25,7 @@
 #include <vector>
 // custom includes
 
-#include "../utilities.h"
+#include "../utils/utilities.h"
 #include "camera.h"
 #include "geometry.h"
 #include "index_buffer.h"
@@ -43,4 +43,4 @@ int initGLProgram(const char* programName);
 
 std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P, int M);
 
-void render(std::vector<Body*> bodies, int P, int M, void (*callback)(std::vector<Body*>&));
+void render(std::vector<Body*> bodies, int P, int M, void (*callback)());

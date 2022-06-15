@@ -78,12 +78,13 @@ std::vector<float> GenVerticesFromBodies(std::vector<Body*> bodies, int P, int M
 // }
 
 // main render function
-void render(std::vector<Body*> bodies, int P, int M, void (*callback)(std::vector<Body*>&)) {
+void render(std::vector<Body*> bodies, int P, int M, void (*callback)()) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_PROGRAM_POINT_SIZE);
     PerspectiveCamera* camera = new PerspectiveCamera(70.0, 4.0 / 3.0, 0.1, 100.0);
     camera->setPosition(glm::vec3(0.5, 0.5, 2));
-    camera->setTarget(glm::vec3(bodies[bodies.size() - 1]->position.x / std::pow(10, P), bodies[bodies.size() - 1]->position.y / std::pow(10, P), bodies[bodies.size() - 1]->position.z / std::pow(10, P)));
+    // camera->setTarget(glm::vec3(bodies[bodies.size() - 1]->position.x / std::pow(10, P), bodies[bodies.size() - 1]->position.y / std::pow(10, P), bodies[bodies.size() - 1]->position.z / std::pow(10, P)));
+    camera->setTarget(glm::vec3(0, 0, 0));
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // changes to wireframe mode
     // white background
@@ -128,12 +129,12 @@ void render(std::vector<Body*> bodies, int P, int M, void (*callback)(std::vecto
         glfwPollEvents();
 
         if (frameNumber % 1 == 0) {
-            callback(bodies);
+            callback();
             vertices = GenVerticesFromBodies(bodies, P, M);
             vb->UpdateBuffer(&vertices[0], vertices.size() * sizeof(float));
         }
         frameNumber++;
-        camera->setTarget(glm::vec3(bodies[bodies.size() - 1]->position.x / std::pow(10, P), bodies[bodies.size() - 1]->position.y / std::pow(10, P), bodies[bodies.size() - 1]->position.z / std::pow(10, P)));
+        camera->setTarget(glm::vec3(0, 0, 0));
 
     }  // Check if the ESC key was pressed or the window was closed
     while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&

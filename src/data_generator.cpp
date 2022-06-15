@@ -3,7 +3,7 @@
 #include <iostream>
 // #include <string>
 
-#include "utilities.h"
+#include "utils/utilities.h"
 
 int main(int argc, char* argv[]) {
     /* 4 argument
