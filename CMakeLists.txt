@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.17)
-project(NBodySim)
+cmake_minimum_required(VERSION 3.8)
+project(NBodySim LANGUAGES CXX CUDA)
 
 # set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g")
-set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g -lGL -lglfw -lGLEW -lGLU")
+set(GCC_COVERAGE_COMPILE_FLAGS " -g -lGL -lglfw -lGLEW -lGLU")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -17,6 +17,8 @@ add_library(
 	src/utils/utilities.cpp
 	src/utils/node.h
 	src/utils/node.cpp
+	src/utils/helper_cuda.h
+	src/utils/helper_string.h
 )
 
 add_library(
@@ -40,15 +42,12 @@ add_library(
 	src/OpenGL/vertex_buffer_layout.h
 )
 
-
-# FILE(
-# 	GLOB
-# 	SRCS
-# 	src/*.cpp)
-
+	
 add_executable(DataGenerator src/data_generator.cpp)
 add_executable(Serial src/serial.cpp)
+add_executable(Cuda src/cuda.cu)
 
 target_link_libraries(DataGenerator PRIVATE utils)
 target_link_libraries(Serial PRIVATE utils gl_utils)
+target_link_libraries(Cuda PRIVATE utils gl_utils)
 

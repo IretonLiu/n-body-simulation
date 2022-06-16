@@ -8,7 +8,6 @@
 #include <cmath>
 #include <glm/glm.hpp>
 #include <iostream>
-#include <random>
 #include <string>
 #include <vector>
 
@@ -32,15 +31,6 @@ inline long double DistSquared(const vec3 &p1, const vec3 &p2) {
 inline long double NewtonsGravitationalLaw(long double m1, long double m2, long double rSquared) {
     return G * m1 * m2 * (1 / (rSquared));
 }
-
-/**
- * @brief Generate a n bodies with magnitude P and M
- *
- * @param n number of bodies
- * @param P magnitude of the position
- * @param M magnitude of the mass
- */
-std::vector<Body *> GenerateNBodies(int n, int P, int M);
 
 /**
  * @brief Get the maximum possible position a body can initialise at

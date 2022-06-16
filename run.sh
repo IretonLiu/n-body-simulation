@@ -1,7 +1,8 @@
 #!/bin/bash
 
-while getopts 'c:' OPTION; do
+while getopts 'c' OPTION; do
   case "$OPTION" in
+
     c)
       rm -rf build
       ;;
@@ -21,7 +22,7 @@ fi
 echo "----- COMPILING -----"
 ( cd build ; make )
 
-executables="DataGenerator Serial B"
+executables="DataGenerator Serial Cuda"
 if [ $# -eq 0 ]; then
 	echo "Please supply the name of the executable"
 	exit 1
