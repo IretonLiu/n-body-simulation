@@ -3,6 +3,7 @@ project(NBodySim LANGUAGES CXX CUDA)
 
 # set(GCC_COVERAGE_COMPILE_FLAGS "-Wall -g")
 set(GCC_COVERAGE_COMPILE_FLAGS " -g -lGL -lglfw -lGLEW -lGLU")
+set(GCC_COVERAGE_COMPILE_FLAGS " -g -lGL -lglfw -lGLEW -lGLU")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -50,4 +51,9 @@ add_executable(Cuda src/cuda.cu)
 target_link_libraries(DataGenerator PRIVATE utils)
 target_link_libraries(Serial PRIVATE utils gl_utils)
 target_link_libraries(Cuda PRIVATE utils gl_utils)
-
+target_compile_options(Cuda PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+												-g;
+												-G;
+												-arch=sm_61;
+                        -std=c++11;
+>)

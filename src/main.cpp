@@ -2,5 +2,5 @@
 // #include <vector>
 
 // int main() {
-//     std::cout << sizeof(long double) << std::endl;
+//     std::cout << sizeof(double) << std::endl;
 // }

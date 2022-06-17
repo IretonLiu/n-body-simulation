@@ -4,7 +4,7 @@
 //     std::vector<Body *> nbodies(n + 1);
 
 //     std::default_random_engine generator;
-//     std::normal_distribution<long double> distribution(0.0, 1.0 / 6.0);
+//     std::normal_distribution<double> distribution(0.0, 1.0 / 6.0);
 
 //     for (int i = 0; i < n; i++) {
 //         double x = distribution(generator);
@@ -16,7 +16,7 @@
 //         double z = distribution(generator);
 //         z = std::min(std::max(z, -0.5), 0.5);
 
-//         long double mass = 10.0 * rand() / RAND_MAX;
+//         double mass = 10.0 * rand() / RAND_MAX;
 //         Body *body = new Body(mass * std::pow(10, M), x * std::pow(10, P), y * std::pow(10, P), z * std::pow(10, P));
 
 //         nbodies[i] = body;

@@ -1,12 +1,12 @@
 #include "body.h"
 
-Body::Body(long double mass, long double x, long double y, long double z) : mass(mass) {
+Body::Body(double mass, double x, double y, double z) : mass(mass) {
     position.x = x;
     position.y = y;
     position.z = z;
 }
 
-Body::Body(long double mass, const vec3 &position) : mass(mass) {
+Body::Body(double mass, const vec3 &position) : mass(mass) {
     this->position = position;
 }
 
@@ -36,17 +36,17 @@ void Body::update() {
 
 vec3 Body::calculateForce(Body *other) {
     // use Newton's Gravitational Law for this
-    long double rSquared = DistSquared(this->position, other->position);
-    long double magnitude = NewtonsGravitationalLaw(this->mass, other->mass, rSquared);
+    double rSquared = DistSquared(this->position, other->position);
+    double magnitude = NewtonsGravitationalLaw(this->mass, other->mass, rSquared);
 
     // determine the direction of the force (will be towards the other body)
-    // long double direcX = other->x - this->x;
-    // long double direcY = other->y - this->y;
+    // double direcX = other->x - this->x;
+    // double direcY = other->y - this->y;
 
     vec3 direction = other->position - this->position;
 
     // normalise the direction
-    long double norm = std::sqrt(rSquared);
+    double norm = std::sqrt(rSquared);
 
     // take the component of force acting in each direction
     vec3 force = (direction / norm) * magnitude;
@@ -54,19 +54,19 @@ vec3 Body::calculateForce(Body *other) {
     return force;
 }
 
-vec3 Body::calculateForce(vec3 centreOfMass, long double mass) {
+vec3 Body::calculateForce(vec3 centreOfMass, double mass) {
     // use Newton's Gravitational Law for this
-    long double rSquared = DistSquared(this->position, centreOfMass);
-    long double magnitude = NewtonsGravitationalLaw(this->mass, mass, rSquared);
+    double rSquared = DistSquared(this->position, centreOfMass);
+    double magnitude = NewtonsGravitationalLaw(this->mass, mass, rSquared);
 
     // determine the direction of the force (will be towards the other body)
-    // long double direcX = other->x - this->x;
-    // long double direcY = other->y - this->y;
+    // double direcX = other->x - this->x;
+    // double direcY = other->y - this->y;
 
     vec3 direction = centreOfMass - this->position;
 
     // normalise the direction
-    long double norm = std::sqrt(rSquared);
+    double norm = std::sqrt(rSquared);
 
     // take the component of force acting in each direction
     vec3 force = (direction / norm) * magnitude;

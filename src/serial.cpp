@@ -111,10 +111,10 @@ int main(int argc, char* argv[]) {
 
     // helper variables for reading input
     std::string line;
-    long double mass;
-    long double x;
-    long double y;
-    long double z;
+    double mass;
+    double x;
+    double y;
+    double z;
 
     // create the bodies
 
@@ -146,9 +146,9 @@ int main(int argc, char* argv[]) {
     // perform a number of iterations
 
     int glProgramID = initGLProgram("Serial");
-    // render(bodies, P, M, BarnesHut);
+    render(bodies, P, M, BarnesHut);
     // for (int i = 0; i < 1; i++)
-    BruteForce();
+    // BruteForce();
 
     // BarnesHut();
 

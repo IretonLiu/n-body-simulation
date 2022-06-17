@@ -5,7 +5,7 @@
 
 class Body {
    public:
-    long double mass;
+    double mass;
 
     // position
     vec3 position;
@@ -21,9 +21,9 @@ class Body {
     //     return std::to_string(mass) + " " + std::to_string(.x) + " " + std::to_string(y);
     // }
 
-    Body(long double mass, long double x, long double y, long double z);
+    Body(double mass, double x, double y, double z);
 
-    Body(long double mass, const vec3 &position);
+    Body(double mass, const vec3 &position);
 
     // changes the force
     void accumulateForce(const vec3 &force);
@@ -39,5 +39,5 @@ class Body {
     vec3 calculateForce(Body *other);
 
     // calcuate force based on centre of mass
-    vec3 calculateForce(vec3 centreOfMass, long double mass);
+    vec3 calculateForce(vec3 centreOfMass, double mass);
 };

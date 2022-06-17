@@ -16,7 +16,7 @@ vec3 &vec3::operator=(const vec3 &other) {
     return *this;
 }
 
-vec3 vec3::operator/(long double d) {
+vec3 vec3::operator/(double d) {
     vec3 vec;
     vec.x = this->x / d;
     vec.y = this->y / d;
@@ -24,7 +24,7 @@ vec3 vec3::operator/(long double d) {
     return vec;
 }
 
-vec3 vec3::operator*(long double d) {
+vec3 vec3::operator*(double d) {
     vec3 vec;
     vec.x = this->x * d;
     vec.y = this->y * d;

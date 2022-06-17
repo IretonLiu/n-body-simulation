@@ -9,16 +9,16 @@
 #include <cmath>
 class vec3 {
    public:
-    long double x;
-    long double y;
-    long double z;
+    double x;
+    double y;
+    double z;
     CUDA_CALLABLE_MEMBER vec3() : x(0), y(0), z(0){};
-    CUDA_CALLABLE_MEMBER vec3(long double x, long double y, long double z) : x(x), y(y), z(z){};
+    CUDA_CALLABLE_MEMBER vec3(double x, double y, double z) : x(x), y(y), z(z){};
 
     CUDA_CALLABLE_MEMBER vec3 &operator+=(const vec3 &other);
     CUDA_CALLABLE_MEMBER vec3 &operator=(const vec3 &other);
-    CUDA_CALLABLE_MEMBER vec3 operator/(long double d);
-    CUDA_CALLABLE_MEMBER vec3 operator*(long double d);
+    CUDA_CALLABLE_MEMBER vec3 operator/(double d);
+    CUDA_CALLABLE_MEMBER vec3 operator*(double d);
     CUDA_CALLABLE_MEMBER vec3 operator-();
     CUDA_CALLABLE_MEMBER vec3 operator-(const vec3 &other);
     CUDA_CALLABLE_MEMBER vec3 operator+(const vec3 &other);

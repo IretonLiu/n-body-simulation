@@ -9,6 +9,7 @@
 #include "body.h"
 #include "vec3.h"
 
+class CudaNode;
 class Node {
    public:
     /** Constructor for the root node of the octree
@@ -36,13 +37,20 @@ class Node {
     inline vec3 GetHalfSize() { return (maxBound - minBound) / 2; };
 
     inline vec3 GetCOM(bool normalise) { return normalise ? centreOfMass / mass : centreOfMass; };
-    inline long double GetMass() { return mass; };
+    inline double GetMass() { return mass; };
+
+    inline std::vector<Node*> GetChildren() { return children; };
+    inline int GetNumBodies() { return bodies.size(); };
 
     /** Construct the octree recursively
      */
     void ConstructTree();
 
-    void CalculateForces(Body* body, long double r);
+    void CalculateForces(Body* body, double r);
+
+    std::vector<CudaNode*> devicechildren;
+
+    void DFS();
 
    private:
     /*
@@ -60,7 +68,7 @@ class Node {
     vec3 minBound;
     vec3 maxBound;
 
-    long double mass;
+    double mass;
 
     /**Set the correct minBound and maxBound for all the children in this node
      */
