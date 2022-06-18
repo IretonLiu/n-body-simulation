@@ -146,16 +146,18 @@ void Node::CalculateForces(Body* body, double theta) {
     }
 }
 
-void Node::DFS() {
+std::string Node::DFS() {
     std::stack<Node*> traversalStack;
     traversalStack.push(this);
+
+    std::string dfs = "";
 
     while (traversalStack.size() > 0) {
         Node* currentNode = traversalStack.top();
         traversalStack.pop();
 
-        std::cout << currentNode->mass << " " << std::endl;
-
+        // std::cout << currentNode->mass << " " << std::endl;
+        dfs += std::to_string(currentNode->mass) + " ";
         if (currentNode->bodies.size() == 1) continue;
 
         for (int i = 0; i < 8; i++) {
@@ -164,4 +166,6 @@ void Node::DFS() {
                 traversalStack.push(child);
         }
     }
+
+    return dfs;
 }

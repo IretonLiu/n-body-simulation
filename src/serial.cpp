@@ -58,13 +58,13 @@ void BarnesHut() {
 
     Node* octree = new Node(bodies);
 
-    auto t1 = high_resolution_clock::now();
+    // auto t1 = high_resolution_clock::now();
     octree->ConstructTree();
-    auto t2 = high_resolution_clock::now();
-    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    // auto t2 = high_resolution_clock::now();
+    // auto ms_int = duration_cast<milliseconds>(t2 - t1);
     // std::cout << ms_int.count() << "ms for contructrion of tree\n";
 
-    t1 = high_resolution_clock::now();
+    // t1 = high_resolution_clock::now();
     for (unsigned int i = 0; i < bodies.size(); i++) {
         Body* body = bodies[i];
 
@@ -74,8 +74,8 @@ void BarnesHut() {
         octree->CalculateForces(body, theta);
     }
     for (Body* body : bodies) body->update();
-    t2 = high_resolution_clock::now();
-    ms_int = duration_cast<milliseconds>(t2 - t1);
+    // t2 = high_resolution_clock::now();
+    // ms_int = duration_cast<milliseconds>(t2 - t1);
     // std::cout << ms_int.count() << "ms for force\n";
 
     delete octree;
@@ -86,15 +86,17 @@ int main(int argc, char* argv[]) {
      * FILENAME: The file name to read data from
      */
 
-    if (argc != 2) {
+    if (argc != 3) {
         std::cout << "Incorrect number of parameters given:"
-                  << " 1 required, " << argc - 1 << " given" << std::endl
-                  << "FILENAME: The file name to read data from" << std::endl;
+                  << " 2 required, " << argc - 1 << " given" << std::endl
+                  << "FILENAME: The file name to read data from" << std::endl
+                  << "I: Number of iterations to run the simulations for" << std::endl;
         return 0;
     }
-
-    // open the file
     std::string filename(argv[1]);
+    int numIterations = atoi(argv[2]);
+    // open the file
+
     std::ifstream inFile("../data/" + filename);
 
     // the number of particles
@@ -147,10 +149,15 @@ int main(int argc, char* argv[]) {
 
     // int glProgramID = initGLProgram("Serial");
     // render(bodies, P, M, BarnesHut);
-    for (int i = 0; i < 100; i++){
+
+    auto t1 = high_resolution_clock::now();
+    for (int i = 0; i < numIterations; i++) {
         BarnesHut();
-				std::cout<<i<<std::endl;
-		}
+        // std::cout<<i<<std::endl;
+    }
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    std::cout << 1.0 * ms_int.count() / numIterations << "ms for " << numIterations<<" iterations, serial\n";
 
     // BruteForce();
 

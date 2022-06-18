@@ -11,22 +11,22 @@
 #include "utils/node.h"
 #include "utils/utilities.h"
 
+using std::chrono::duration;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
+
 std::vector<Body *> bodies;
 ParallelBody *cudaBodies;
+ParallelBody *cudaBodies_d;
 
 double theta = 0.8;
 size_t maxStackSize = 0;
 int numNodes = 0;
 
-std::stringstream data("6 6 15 9.116473579367844e+15 1.701604548859206e+05 1.305680358210422e+05 -2.130698223755301e+04 8.401877171547095e+15 -2.032763069026615e+04 -1.811363407102262e+05 1.140483239660925e+05 3.943829268190930e+15 -1.791981915863382e+05 5.544912736748732e+03 1.241392662871304e+05 7.830992237586059e+15 5.601020441137095e+03 -8.777286769754969e+04 7.708867393003816e+04 7.984400334760733e+15 3.344990699950628e+04 3.541127793886492e+05 6.195353842703000e+04 1.000000000000000e+19 0.000000000000000e+00 0.000000000000000e+00 0.000000000000000e+00");
 int NUM_THREADX = 1;
 // Building a separate tree for access on cuda
 // preprocessing
-
-template <typename T>
-void DebugPrint(T info) {
-    std::cout << info << std::endl;
-}
 
 __host__ std::pair<Node *, ParallelNode *> CopyTreeToDevice() {
     Node *octree = new Node(bodies);
@@ -111,6 +111,7 @@ void FreeTree(Node *octree, ParallelNode *cudaOctree_d) {
 
 void UpdateBodies(ParallelBody *cudaBodies) {
     for (int i = 0; i < bodies.size(); i++) {
+				 DebugPrint(bodies[i]->mass);
         bodies[i]->position.x = cudaBodies[i].position[0];
         bodies[i]->position.y = cudaBodies[i].position[1];
         bodies[i]->position.z = cudaBodies[i].position[2];
@@ -130,7 +131,7 @@ __device__ double DistSquared_d(double *p1, double *p2) {
 }
 
 __device__ bool isEqual(double one, double two) {
-    double eps = 0.1;
+    double eps = 1.0;
     return (fabs(one - two) < eps);
 }
 
@@ -207,29 +208,51 @@ __global__ void BarnesHutKernel(ParallelNode *octree_d, size_t maxStackSize_d, P
     }
 }
 
+void BarnesHutCuda(int N, int numIterations) {
+    std::pair<Node *, ParallelNode *> octreePair;
+
+    checkCudaErrors(cudaMalloc(&cudaBodies_d, sizeof(ParallelBody) * N));
+
+    for (int i = 0; i < numIterations; i++) {
+        octreePair = CopyTreeToDevice();
+
+        checkCudaErrors(cudaMemcpy(cudaBodies_d, cudaBodies, sizeof(ParallelBody) * N, cudaMemcpyHostToDevice));
+
+        dim3 dimBlock(NUM_THREADX, 1, 1);
+        dim3 dimGrid((bodies.size() + NUM_THREADX) / NUM_THREADX, 1, 1);
+
+        BarnesHutKernel<<<dimGrid, dimBlock, maxStackSize * NUM_THREADX * sizeof(ParallelNode *)>>>(octreePair.second, maxStackSize, cudaBodies_d, N, theta);
+        checkCudaErrors(cudaDeviceSynchronize());
+
+        checkCudaErrors(cudaMemcpy(cudaBodies, cudaBodies_d, sizeof(ParallelBody) * N, cudaMemcpyDeviceToHost));
+        FreeTree(octreePair.first, octreePair.second);
+        UpdateBodies(cudaBodies);
+        // std::cout << i << std::endl;
+    }
+}
+
 int main(int argc, char *argv[]) {
     /* 1 argument
      * FILENAME: The file name to read data from
      */
-
-    if (argc != 2) {
+    if (argc != 3) {
         std::cout << "Incorrect number of parameters given:"
-                  << " 1 required, " << argc - 1 << " given" << std::endl
-                  << "FILENAME: The file name to read data from" << std::endl;
+                  << " 2 required, " << argc - 1 << " given" << std::endl
+                  << "FILENAME: The file name to read data from" << std::endl
+                  << "I: Number of iterations to run the simulations for" << std::endl;
         return 0;
     }
+    std::string filename(argv[1]);
+    int numIterations = atoi(argv[2]);
 
     // open the file
-    std::string filename(argv[1]);
     std::ifstream inFile("../data/" + filename);
 
     // the number of particles, magnitude of the position,magnitude of the mass
     int N, P, M;
     inFile >> N >> P >> M;
     inFile.ignore();
-    // data >> N >> P >> M;
 
-    // data.ignore();
     // helper variables for reading input
     std::string line;
     double mass;
@@ -261,33 +284,11 @@ int main(int argc, char *argv[]) {
         cudaBodies[i].mass = mass;
     }
 
-    // ParallelNode *cudaNode_h = new ParallelNode();
-    // ParallelNode *cudaNode_d;
-    // cudaNode_h->mass = 123.0;
-
-    // checkCudaErrors(cudaMalloc(&cudaNode_d, sizeof(ParallelNode)));
-    // checkCudaErrors(cudaMemcpy(cudaNode_d, cudaNode_h, sizeof(ParallelNode), cudaMemcpyHostToDevice));
-    std::pair<Node *, ParallelNode *> octreePair;
-    ParallelBody *cudaBodies_d;
-    checkCudaErrors(cudaMalloc(&cudaBodies_d, sizeof(ParallelBody) * N));
-
-    int numIterations = 100;
-    for (int i = 0; i < numIterations; i++) {
-        octreePair = CopyTreeToDevice();
-
-        checkCudaErrors(cudaMemcpy(cudaBodies_d, cudaBodies, sizeof(ParallelBody) * N, cudaMemcpyHostToDevice));
-
-        dim3 dimBlock(NUM_THREADX, 1, 1);
-        dim3 dimGrid((bodies.size() + NUM_THREADX) / NUM_THREADX, 1, 1);
-
-        BarnesHutKernel<<<dimGrid, dimBlock, maxStackSize * NUM_THREADX * sizeof(ParallelNode *)>>>(octreePair.second, maxStackSize, cudaBodies_d, N, theta);
-        checkCudaErrors(cudaDeviceSynchronize());
-
-        checkCudaErrors(cudaMemcpy(cudaBodies, cudaBodies_d, sizeof(ParallelBody) * N, cudaMemcpyDeviceToHost));
-        FreeTree(octreePair.first, octreePair.second);
-        UpdateBodies(cudaBodies);
-				std::cout<<i<<std::endl;
-    }
+    auto t1 = high_resolution_clock::now();
+    BarnesHutCuda(N, numIterations);
+    auto t2 = high_resolution_clock::now();
+    auto ms_int = duration_cast<milliseconds>(t2 - t1);
+    std::cout << 1.0 * ms_int.count() / numIterations << "ms for " << numIterations<<" iterations, cuda\n";
 
     std::ofstream outFile("../out/cuda-" + filename);
     outFile.precision(15);

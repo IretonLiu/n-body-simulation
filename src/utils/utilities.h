@@ -16,7 +16,6 @@
 
 #define G 6.67430e-11
 
-#define ITERATIONS 2000
 
 class Body;
 
@@ -39,3 +38,8 @@ inline double NewtonsGravitationalLaw(double m1, double m2, double rSquared) {
  * @return the maximum possible position
  */
 double GetMaxPosition(int P);
+
+template <typename T>
+inline void DebugPrint(T info) {
+    std::cout << info << std::endl;
+}

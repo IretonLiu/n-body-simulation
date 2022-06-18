@@ -57,7 +57,7 @@ class Node {
 
     std::vector<ParallelNode*> devicechildren;
 
-    void DFS();
+    std::string DFS();
 
    private:
     /*
