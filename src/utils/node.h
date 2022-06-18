@@ -9,7 +9,14 @@
 #include "body.h"
 #include "vec3.h"
 
-class CudaNode;
+struct ParallelNode {
+    double centreOfMass[3];
+    double mass;
+    double diagDist;
+    int numBodies;
+    ParallelNode* deviceChildren[8];
+};
+
 class Node {
    public:
     /** Constructor for the root node of the octree
@@ -48,7 +55,7 @@ class Node {
 
     void CalculateForces(Body* body, double r);
 
-    std::vector<CudaNode*> devicechildren;
+    std::vector<ParallelNode*> devicechildren;
 
     void DFS();
 

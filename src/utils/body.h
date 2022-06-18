@@ -3,6 +3,12 @@
 #include "utilities.h"
 #include "vec3.h"
 
+struct ParallelBody {
+    double mass;
+    double position[3];
+    double velocity[3];
+};
+
 class Body {
    public:
     double mass;

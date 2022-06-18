@@ -62,7 +62,7 @@ void BarnesHut() {
     octree->ConstructTree();
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
-    std::cout << ms_int.count() << "ms for contructrion of tree\n";
+    // std::cout << ms_int.count() << "ms for contructrion of tree\n";
 
     t1 = high_resolution_clock::now();
     for (unsigned int i = 0; i < bodies.size(); i++) {
@@ -76,7 +76,7 @@ void BarnesHut() {
     for (Body* body : bodies) body->update();
     t2 = high_resolution_clock::now();
     ms_int = duration_cast<milliseconds>(t2 - t1);
-    std::cout << ms_int.count() << "ms for force\n";
+    // std::cout << ms_int.count() << "ms for force\n";
 
     delete octree;
 }
@@ -145,16 +145,18 @@ int main(int argc, char* argv[]) {
     // call the brute force
     // perform a number of iterations
 
-    int glProgramID = initGLProgram("Serial");
-    render(bodies, P, M, BarnesHut);
-    // for (int i = 0; i < 1; i++)
+    // int glProgramID = initGLProgram("Serial");
+    // render(bodies, P, M, BarnesHut);
+    for (int i = 0; i < 100; i++){
+        BarnesHut();
+				std::cout<<i<<std::endl;
+		}
+
     // BruteForce();
 
-    // BarnesHut();
-
     // write all the output and free all the bodies
-    std::ofstream outFile("../out/" + filename);
-    outFile.precision(30);
+    std::ofstream outFile("../out/serial-" + filename);
+    outFile.precision(15);
 
     outFile << N << std::endl;
     outFile << std::scientific;

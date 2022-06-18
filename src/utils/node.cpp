@@ -25,7 +25,7 @@ void Node::ConstructChildren() {
 Node::Node(std::vector<Body*>& bodies) {
     this->bodies = bodies;
     this->children = std::vector<Node*>(8);
-    this->devicechildren = std::vector<CudaNode*>(8);
+    this->devicechildren = std::vector<ParallelNode*>(8);
     centreOfMass = vec3(0, 0, 0);
     minBound = bodies[0]->position;
     maxBound = bodies[0]->position;
@@ -48,7 +48,7 @@ Node::Node(vec3 minBound, vec3 maxBound, int maxBodies) {
     this->maxBound = maxBound;
     this->bodies.reserve(maxBodies);  // reserve enough space for the children
     this->children = std::vector<Node*>(8);
-    this->devicechildren = std::vector<CudaNode*>(8);
+    this->devicechildren = std::vector<ParallelNode*>(8);
 
     centreOfMass = vec3(0, 0, 0);
     mass = 0;
