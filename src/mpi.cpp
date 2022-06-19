@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
     if (rank == 0)
-        std::cout << 1.0 * ms_int.count() / numIterations << "ms for " << numIterations<<" iterations, mpi\n";
+        std::cout << 1.0 * ms_int.count() / numIterations << "ms average for " << numIterations<<" iterations, mpi\n";
 
     if (rank == 0) {
         std::ofstream outFile("../out/mpi-" + filename);

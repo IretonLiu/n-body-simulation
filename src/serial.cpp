@@ -157,7 +157,7 @@ int main(int argc, char* argv[]) {
     }
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
-    std::cout << 1.0 * ms_int.count() / numIterations << "ms for " << numIterations<<" iterations, serial\n";
+    std::cout << 1.0 * ms_int.count() / numIterations << "ms average for " << numIterations<<" iterations, serial\n";
 
     // BruteForce();
 

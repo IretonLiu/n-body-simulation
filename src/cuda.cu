@@ -24,7 +24,7 @@ double theta = 0.8;
 size_t maxStackSize = 0;
 int numNodes = 0;
 
-int NUM_THREADX = 1;
+int NUM_THREADX = 64;
 // Building a separate tree for access on cuda
 // preprocessing
 
@@ -111,7 +111,7 @@ void FreeTree(Node *octree, ParallelNode *cudaOctree_d) {
 
 void UpdateBodies(ParallelBody *cudaBodies) {
     for (int i = 0; i < bodies.size(); i++) {
-				 DebugPrint(bodies[i]->mass);
+        // std::cout<< cudaBodies[i].position[0]<<" "<<std::endl;
         bodies[i]->position.x = cudaBodies[i].position[0];
         bodies[i]->position.y = cudaBodies[i].position[1];
         bodies[i]->position.z = cudaBodies[i].position[2];
@@ -214,8 +214,7 @@ void BarnesHutCuda(int N, int numIterations) {
     checkCudaErrors(cudaMalloc(&cudaBodies_d, sizeof(ParallelBody) * N));
 
     for (int i = 0; i < numIterations; i++) {
-        octreePair = CopyTreeToDevice();
-
+        std::pair<Node *, ParallelNode *> octreePair = CopyTreeToDevice();
         checkCudaErrors(cudaMemcpy(cudaBodies_d, cudaBodies, sizeof(ParallelBody) * N, cudaMemcpyHostToDevice));
 
         dim3 dimBlock(NUM_THREADX, 1, 1);
@@ -225,9 +224,9 @@ void BarnesHutCuda(int N, int numIterations) {
         checkCudaErrors(cudaDeviceSynchronize());
 
         checkCudaErrors(cudaMemcpy(cudaBodies, cudaBodies_d, sizeof(ParallelBody) * N, cudaMemcpyDeviceToHost));
-        FreeTree(octreePair.first, octreePair.second);
+        // FreeTree(octreePair.first, octreePair.second);
+        delete octreePair.first;
         UpdateBodies(cudaBodies);
-        // std::cout << i << std::endl;
     }
 }
 
@@ -283,12 +282,13 @@ int main(int argc, char *argv[]) {
         cudaBodies[i].velocity[2] = bodies[i]->velocity.z;
         cudaBodies[i].mass = mass;
     }
+    inFile.close();
 
     auto t1 = high_resolution_clock::now();
     BarnesHutCuda(N, numIterations);
     auto t2 = high_resolution_clock::now();
     auto ms_int = duration_cast<milliseconds>(t2 - t1);
-    std::cout << 1.0 * ms_int.count() / numIterations << "ms for " << numIterations<<" iterations, cuda\n";
+    std::cout << 1.0 * ms_int.count() / numIterations << "ms  average for " << numIterations << " iterations, cuda\n";
 
     std::ofstream outFile("../out/cuda-" + filename);
     outFile.precision(15);
