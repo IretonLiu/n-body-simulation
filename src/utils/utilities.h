@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <glm/glm.hpp>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,19 +15,18 @@
 
 #define G 6.67430e-11
 
-
 class Body;
 
 inline double DistSquared(double x1, double y1, double x2, double y2) {
-    return std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2);
+  return std::pow(x2 - x1, 2) + std::pow(y2 - y1, 2);
 }
 
 inline double DistSquared(const vec3 &p1, const vec3 &p2) {
-    return std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2) + std::pow(p1.z - p2.z, 2);
+  return std::pow(p1.x - p2.x, 2) + std::pow(p1.y - p2.y, 2) + std::pow(p1.z - p2.z, 2);
 }
 
 inline double NewtonsGravitationalLaw(double m1, double m2, double rSquared) {
-    return G * m1 * m2 * (1 / (rSquared));
+  return G * m1 * m2 * (1 / (rSquared));
 }
 
 /**
@@ -41,5 +39,5 @@ double GetMaxPosition(int P);
 
 template <typename T>
 inline void DebugPrint(T info) {
-    std::cout << info << std::endl;
+  std::cout << info << std::endl;
 }
