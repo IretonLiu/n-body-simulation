@@ -2,7 +2,7 @@
 # These lines are for slurm
 
 # specify a partition by its name in which to run your job. 
-#SBATCH -p stampede
+#SBATCH -p batch
 # specify number of nodes you are requesting to run your job 
 #SBATCH -N 2
 # specify number of tasks/processes
@@ -61,7 +61,7 @@ do
   for numProc in "${numProcesses[@]}"
   do 
     echo "$numProc processes -----"
-    ./run.sh -m MPI $numProcs $data $numIterations
+    ./run.sh -m MPI $numProc $data $numIterations
     echo ""
   done;
 

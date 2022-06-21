@@ -6,7 +6,6 @@
 #include <sstream>
 #include <vector>
 
-#include "OpenGL/gl_utilities.h"
 #include "utils/helper_cuda.h"
 #include "utils/node.h"
 #include "utils/utilities.h"

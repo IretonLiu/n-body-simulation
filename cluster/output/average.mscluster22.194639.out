@@ -1,0 +1,248 @@
+----------------------------------------------------------------
+DATE: Mon Jun 20 01:13:45 SAST 2022
+Job is running on nodes mscluster[22,33]
+----------------------------------------------------------------
+SLURM: sbatch is running mscluster0.ms.wits.ac.za
+SLURM: job ID is 194639
+SLURM: submit directory is /home-mscluster/whill/hpc/n-body-simulation
+SLURM: number of nodes allocated is 2
+SLURM: job name is n-body
+----------------------------------------------------------------
+--------------------Testing file: test_1000 --------------------
+----- Testing Serial -----
+
+----- RUNNING -----
+78.8ms average for 5 iterations, serial
+
+----- DONE -----
+
+----- Testing Cuda -----
+
+----- RUNNING -----
+96.8ms  average for 5 iterations, cuda
+
+----- DONE -----
+
+----- Testing MPI -----
+4 processes -----
+
+----- RUNNING -----
+27.8ms average for 5 iterations, mpi
+
+----- DONE -----
+
+6 processes -----
+
+----- RUNNING -----
+21.4ms average for 5 iterations, mpi
+
+----- DONE -----
+
+8 processes -----
+
+----- RUNNING -----
+17.8ms average for 5 iterations, mpi
+
+----- DONE -----
+
+10 processes -----
+
+----- RUNNING -----
+15.6ms average for 5 iterations, mpi
+
+----- DONE -----
+
+12 processes -----
+
+----- RUNNING -----
+15ms average for 5 iterations, mpi
+
+----- DONE -----
+
+----- Validating -----
+
+----- RUNNING -----
+ Serial output and Cuda output are identical
+ Serial output and MPI output are identical
+
+----- DONE -----
+
+--------------------Testing file: test_10000 --------------------
+----- Testing Serial -----
+
+----- RUNNING -----
+1656.8ms average for 5 iterations, serial
+
+----- DONE -----
+
+----- Testing Cuda -----
+
+----- RUNNING -----
+289.8ms  average for 5 iterations, cuda
+
+----- DONE -----
+
+----- Testing MPI -----
+4 processes -----
+
+----- RUNNING -----
+498.2ms average for 5 iterations, mpi
+
+----- DONE -----
+
+6 processes -----
+
+----- RUNNING -----
+358.2ms average for 5 iterations, mpi
+
+----- DONE -----
+
+8 processes -----
+
+----- RUNNING -----
+294ms average for 5 iterations, mpi
+
+----- DONE -----
+
+10 processes -----
+
+----- RUNNING -----
+252.2ms average for 5 iterations, mpi
+
+----- DONE -----
+
+12 processes -----
+
+----- RUNNING -----
+232ms average for 5 iterations, mpi
+
+----- DONE -----
+
+----- Validating -----
+
+----- RUNNING -----
+ Serial output and Cuda output are identical
+ Serial output and MPI output are identical
+
+----- DONE -----
+
+--------------------Testing file: test_100000 --------------------
+----- Testing Serial -----
+
+----- RUNNING -----
+27481.8ms average for 5 iterations, serial
+
+----- DONE -----
+
+----- Testing Cuda -----
+
+----- RUNNING -----
+2949.4ms  average for 5 iterations, cuda
+
+----- DONE -----
+
+----- Testing MPI -----
+4 processes -----
+
+----- RUNNING -----
+8398.4ms average for 5 iterations, mpi
+
+----- DONE -----
+
+6 processes -----
+
+----- RUNNING -----
+5957.4ms average for 5 iterations, mpi
+
+----- DONE -----
+
+8 processes -----
+
+----- RUNNING -----
+4755.6ms average for 5 iterations, mpi
+
+----- DONE -----
+
+10 processes -----
+
+----- RUNNING -----
+3934.2ms average for 5 iterations, mpi
+
+----- DONE -----
+
+12 processes -----
+
+----- RUNNING -----
+3585.4ms average for 5 iterations, mpi
+
+----- DONE -----
+
+----- Validating -----
+
+----- RUNNING -----
+ Serial output and Cuda output are identical
+ Serial output and MPI output are identical
+
+----- DONE -----
+
+--------------------Testing file: test_50000 --------------------
+----- Testing Serial -----
+
+----- RUNNING -----
+11739ms average for 5 iterations, serial
+
+----- DONE -----
+
+----- Testing Cuda -----
+
+----- RUNNING -----
+1463ms  average for 5 iterations, cuda
+
+----- DONE -----
+
+----- Testing MPI -----
+4 processes -----
+
+----- RUNNING -----
+3669.6ms average for 5 iterations, mpi
+
+----- DONE -----
+
+6 processes -----
+
+----- RUNNING -----
+2633.6ms average for 5 iterations, mpi
+
+----- DONE -----
+
+8 processes -----
+
+----- RUNNING -----
+2080.6ms average for 5 iterations, mpi
+
+----- DONE -----
+
+10 processes -----
+
+----- RUNNING -----
+1808.2ms average for 5 iterations, mpi
+
+----- DONE -----
+
+12 processes -----
+
+----- RUNNING -----
+1567.4ms average for 5 iterations, mpi
+
+----- DONE -----
+
+----- Validating -----
+
+----- RUNNING -----
+ Serial output and Cuda output are identical
+ Serial output and MPI output are identical
+
+----- DONE -----
+
+
+---------- Done! ----------

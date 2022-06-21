@@ -17,13 +17,13 @@ while getopts 'cm' OPTION; do
 done
 shift "$(($OPTIND -1))"
 
-if [ ! -d "build/" ]
-then
-	cmake -B build
-fi
+# if [ ! -d "build/" ]
+# then
+# 	cmake -B build
+# fi
 
-echo "----- COMPILING -----"
-( cd build ; make )
+# echo "----- COMPILING -----"
+# ( cd build ; make )
 
 executables="DataGenerator Serial Cuda MPI Validate"
 if [ $# -eq 0 ]; then
